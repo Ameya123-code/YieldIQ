@@ -1,4 +1,4 @@
-# YieldSense 🌾
+<img width="720" height="540" alt="screenshot_1 5x_postspark_2026-03-26_02-25-32" src="https://github.com/user-attachments/assets/570e852c-3942-437d-9e78-549ce4edb64b" /># YieldSense 🌾
 
 A modern, AI-powered crop yield estimation and analysis dashboard built with Streamlit. Get intelligent recommendations for optimal crop planting based on historical data, without machine learning complexity.
 
@@ -33,6 +33,9 @@ A modern, AI-powered crop yield estimation and analysis dashboard built with Str
 - **Top 3 Crops**: Ranked recommendations with explanations
 - **Individual Analysis**: Crop vs peer average with delta charts
 - **Raw Data**: Complete dataset view
+
+  <img width="720" height="540" alt="screenshot_1 5x_postspark_2026-03-26_02-25-32" src="https://github.com/user-attachments/assets/5181b9b2-e30a-4c20-8f1d-9c1b63400cca" />
+
 
 ## 🛠️ Tech Stack
 
