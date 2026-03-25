@@ -1,4 +1,4 @@
-<img width="720" height="540" alt="screenshot_1 5x_postspark_2026-03-26_02-25-32" src="https://github.com/user-attachments/assets/570e852c-3942-437d-9e78-549ce4edb64b" /># YieldSense 🌾
+
 
 A modern, AI-powered crop yield estimation and analysis dashboard built with Streamlit. Get intelligent recommendations for optimal crop planting based on historical data, without machine learning complexity.
 
