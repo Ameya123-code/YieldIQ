@@ -363,6 +363,7 @@ def main():
                 st.subheader("Key Metrics")
                 st.metric("Best Crop", best_crop, f"{best_yield:.3f}")
                 st.metric("Worst Crop", worst_crop, f"{worst_yield:.3f}")
+                st.info("Best/Worst Crop metrics are based on average yield across the selected season and year range. Use these values for quick benchmarking at a glance.")
 
     with col_right:
         if selected_crops and state != "Select state" and season != "Select season":
@@ -391,6 +392,12 @@ def main():
                 ).properties(height=400)
                 st.altair_chart(line_chart, use_container_width=True)
 
+                st.markdown("**Conclusions from Normalized Yield Trends:**")
+                st.write("- Crops whose lines slope upward are improving faster than historical averages, which is positive for long-term planting.")
+                st.write("- Flatter lines indicate stable performance, useful for risk-averse planning.")
+                st.write("- Crossings between crop lines reveal changes in relative competitiveness over time.")
+                st.write("- Large early volatility suggests dependent on weather/inputs; consistent lines suggest better resilience.")
+
                 # Top 3 crops to plant (middle section)
                 if top3_sorted:
                     with st.container(border=True):
@@ -408,11 +415,30 @@ def main():
                         ).properties(height=300)
                         st.altair_chart(bar, use_container_width=True)
 
+                        # Pie chart for share of predicted production among top 3
+                        st.markdown("**Top-3 Predicted Production Share (Pie Chart)**")
+                        pie = alt.Chart(best_df).mark_arc(innerRadius=50).encode(
+                            theta=alt.Theta("Production:Q", title="Predicted Production"),
+                            color=alt.Color("Crop:N", legend=alt.Legend(title="Crop")),
+                            tooltip=["Crop", "Production", "TrendYield", "Direction", "Stability"]
+                        ).properties(height=300)
+                        st.altair_chart(pie, use_container_width=True)
+
                         st.write("**Why these crops?**")
+                        st.write("• Pie chart shows which crop is expected to contribute most production among top 3.")
+                        st.write("• Bar chart and pie together make it easy to compare absolute/relative values.")
+                        st.write("• Choose crops with high yield and low risk for robust planning.")
+
                         for item in top3_sorted:
                             direction = "improving" if item['Direction'] == 'increasing' else "falling" if item['Direction'] == 'decreasing' else "steady"
                             stability_label = item['Stability'].replace('High risk', 'less predictable, watch weather/market').replace('Medium risk', 'moderately steady').replace('Low risk', 'very stable')
                             st.write(f"- {item['Crop']}: this is a top pick with predicted yield around {item['TrendYield']:.3f} t/ha, status {direction}, and stability profile {stability_label} (based on {item['Records']} historical records).")
+
+                        st.markdown("**Conclusions from Top 3 Crops Bar Chart:**")
+                        st.write("- The bar chart ranks predicted yields clearly, letting you prioritize the highest performing crop quickly.")
+                        st.write("- A strong upward prediction with low risk is ideal; cross-check with trend direction/volatility text.")
+                        st.write("- If all top crop bars are close, diversification across these crops may reduce risk.")
+                        st.write("- Vaccine high performance crops with high production and stability for balanced decisions.")
 
                 # Add new row to database
                 with st.expander("Add new record to database"):
@@ -483,6 +509,22 @@ def main():
                             tooltip=["Year", "Delta"]
                         ).properties(height=220)
                         st.altair_chart(delta_chart, use_container_width=True)
+
+                        st.markdown("**Peer vs Individual Summary (Bar Chart)**")
+                        summary = data.groupby('Type', as_index=False)['Normalized Yield'].mean()
+                        summary_chart = alt.Chart(summary).mark_bar(cornerRadiusTopLeft=3, cornerRadiusTopRight=3).encode(
+                            x=alt.X('Type:N', title='Group'),
+                            y=alt.Y('Normalized Yield:Q', title='Average Normalized Yield'),
+                            color=alt.Color('Type:N', scale=alt.Scale(domain=['Individual','Peer'], range=['#d62728','#7f7f7f'])),
+                            tooltip=[alt.Tooltip('Type:N'), alt.Tooltip('Normalized Yield:Q', format='.3f')]
+                        ).properties(height=260)
+                        st.altair_chart(summary_chart, use_container_width=True)
+
+                        st.markdown("**Conclusions from Individual vs Peer Analysis:**")
+                        st.write("- Bar chart gives instant comparison of how individual crop average normalized yield compares to peer average.")
+                        st.write("- Positive delta and taller individual bar means a competitive advantage in the chosen window.")
+                        st.write("- If peer and individual bars are close, the crop is roughly in-line with regional performance.")
+                        st.write("- Monitor across years to identify stable outperformers vs volatile ones.")
 
                 # Raw data
                 st.subheader("Raw Data")
